@@ -107,17 +107,17 @@ def index():
 def publish():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
-        while True:
-            t = int(time.mktime(datetime.datetime.now().timetuple()))
-            tail_like(app.config.get('file_path'), ws)
-            ws.send(json.dumps([{"time": t, "y": random.random() * 1000},
-                                {"time": t, "y": random.random() * 1000}]))
-            time.sleep(1)
+        tail_like(app.config.get('file_path'), ws)
+        # while True:
+        #     t = int(time.mktime(datetime.datetime.now().timetuple()))
+        #     ws.send(json.dumps([{"time": t, "y": random.random() * 1000},
+        #                         {"time": t, "y": random.random() * 1000}]))
+        #     time.sleep(1)
     return
 
 if __name__ == '__main__':
     app.debug = True
     app.config['file_path'] = sys.argv[1]
     app.config['end_time'] = sys.argv[2]
-    server = pywsgi.WSGIServer(('192.168.12.27', 8000), app, handler_class=WebSocketHandler)
+    server = pywsgi.WSGIServer(('localhost', 8000), app, handler_class=WebSocketHandler)
     server.serve_forever()
