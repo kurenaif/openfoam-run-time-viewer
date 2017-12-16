@@ -4,6 +4,7 @@ import json
 import datetime
 import random
 import time
+import argparse
 from time import strptime, mktime, sleep
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
@@ -115,9 +116,17 @@ def publish():
         tail_like(app.config.get('file_path'), ws)
     return
 
-if __name__ == '__main__':
+def main(file_path, end_time):
     app.debug = True
-    app.config['file_path'] = sys.argv[1]
-    app.config['end_time'] = sys.argv[2]
+    app.config['file_path'] = file_path
+    app.config['end_time'] = end_time
     server = pywsgi.WSGIServer(('localhost', 8000), app, handler_class=WebSocketHandler)
     server.serve_forever()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Predict calculation end time')
+    parser.add_argument('file_path', help='log file path', type=str)
+    parser.add_argument('end_time', help='calculation end time', type=float)
+    args = parser.parse_args()
+    main(args.file_path, args_end_time)
