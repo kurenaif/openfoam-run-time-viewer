@@ -129,4 +129,4 @@ if __name__ == '__main__':
     parser.add_argument('file_path', help='log file path', type=str)
     parser.add_argument('end_time', help='calculation end time', type=float)
     args = parser.parse_args()
-    main(args.file_path, args_end_time)
+    main(args.file_path, args.end_time)
