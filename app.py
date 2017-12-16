@@ -17,11 +17,16 @@ from watchdog.observers.polling import PollingObserver
 class TailHandler(FileSystemEventHandler):
     
     def __init__(self, path, ws):
+        # file path
         self.path = path
         self.file = open(path, 'r')
+        # read file position
         self.pos = 0
+        # [{ExecutionTime, Time}, {ExecutionTime, Time}, ...]
         self.time = []
+        # websocket
         self.wss = ws
+        # print_line when object is  constructed
         self.print_line()
 
     def close(self):
@@ -29,35 +34,35 @@ class TailHandler(FileSystemEventHandler):
 
     def print_line(self):
         self.file.seek(self.pos)
+        # {ExecutionTime: value, Time: value}
         time_dict = {}
         for block in iter(lambda: self.file.readline(), ''):
             if(block.find("ExecutionTime") > -1):
                 time_dict["ExecutionTime"] = float(block.split(" ")[2])
                 if(len(time_dict.keys()) == 2):
                     print(time_dict)
-                    self.time.append(time_dict);
+                    self.time.append(time_dict)
                 time_dict = {}
                 
+                # compare with before 100 step
                 width = 100
                 if(len(self.time) > width):
-                    # print(self.time)
+                    # linear interoplation (using 100step ago time  & now step time)
                     y1 = self.time[-width]["Time"]
                     x1 = self.time[-width]["ExecutionTime"]
                     y2 = self.time[-1]["Time"]
                     x2 = self.time[-1]["ExecutionTime"] 
-                    # print(y2)
-                    # print(y1)
-                    # print(y2-y1)
+                    # calc endTime using linear interpolation
                     end_time = (x2-x1)/(y2-y1)*(float(sys.argv[2]) - y1) + x1
+                    # float -> datetime
                     end_datetime = (self.start_datetime + datetime.timedelta(seconds = end_time))
-
-                    print("ET: ", mktime((self.start_datetime + datetime.timedelta(seconds = x2)).timetuple()), "time", y2)
-                    print("ET: ", str(datetime.timedelta(seconds = x2)), "time", y2)
+                    # send data to websocket
                     self.wss.send(json.dumps([
                         {"time": mktime((self.start_datetime + datetime.timedelta(seconds = x2)).timetuple()), "y":y2, "end_time": str(end_datetime)} ,
                                         ]))
-                    print("excepted end time: ", end_time)
-                    print("reaming time: ", end_time - x2)
+                    # output console
+                    print("excepted end time: ", end_datetime)
+                    print("reaming time: ", end_time - x2, "sec.")
                         
             elif(block.find("Time") > -1):
                 try:
@@ -108,11 +113,6 @@ def publish():
     if request.environ.get('wsgi.websocket'):
         ws = request.environ['wsgi.websocket']
         tail_like(app.config.get('file_path'), ws)
-        # while True:
-        #     t = int(time.mktime(datetime.datetime.now().timetuple()))
-        #     ws.send(json.dumps([{"time": t, "y": random.random() * 1000},
-        #                         {"time": t, "y": random.random() * 1000}]))
-        #     time.sleep(1)
     return
 
 if __name__ == '__main__':
