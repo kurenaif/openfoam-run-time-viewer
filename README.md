@@ -7,7 +7,7 @@ It is OpenFOAM of computation time prediction.
 `openfoem-run-time-viewer` is GUI tool that show computation time prediction.
 
 ### GUI output
-![](doc/sample.png)
+![](doc/sample.gif)
 
 ### CUI output
 ```
@@ -39,6 +39,7 @@ foamJob rhoCentralFoam
 cd -
 python app.py $WM_PROJECT_DIR/tutorials/compressible/rhoCentralFoam/wedge15Ma5/log 0.2
 # (access localhost:8000 with browser)
+# kill task (Ctrl+c on terminal)
 ```
 
 ## Usage
@@ -61,9 +62,16 @@ cd path/to/openfoam-run-time-viewer
 python app.py path/to/OpenFOAM/caseDir/log end_time
 ```
 
+### 3. kill GUI
+kill GUI but don't stop calculation 
+
+```
+Ctrl+C (on terminal)
+```
+
 ## about app.py
 
-``reau`
+```
 usage: app.py [-h] file_path end_time
 
 Predict calculation end time
