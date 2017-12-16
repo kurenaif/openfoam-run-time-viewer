@@ -121,6 +121,8 @@ def main(file_path, end_time):
     app.config['file_path'] = file_path
     app.config['end_time'] = end_time
     server = pywsgi.WSGIServer(('localhost', 8000), app, handler_class=WebSocketHandler)
+    print("server has been started")
+    print("please access http://localhost:8000");
     server.serve_forever()
 
 
@@ -129,5 +131,4 @@ if __name__ == '__main__':
     parser.add_argument('file_path', help='log file path', type=str)
     parser.add_argument('end_time', help='calculation end time', type=float)
     args = parser.parse_args()
-    print(args)
     main(args.file_path, args.end_time)

@@ -6,6 +6,21 @@ It is OpenFOAM of computation time prediction.
 
 `openfoem-run-time-viewer` is GUI tool that show computation time prediction.
 
+### GUI output
+![](doc/sample.png)
+
+### CUI output
+```
+{'Time': 0.0992, 'ExecutionTime': 89.49}
+excepted end time:  2017-12-17 01:16:44.052353
+reaming time:  95.56235294117648 sec.
+{'Time': 0.0993, 'ExecutionTime': 89.58}
+excepted end time:  2017-12-17 01:16:44.047549
+reaming time:  95.46754901960786 sec.
+{'Time': 0.0994, 'ExecutionTime': 89.66}
+excepted end time:  2017-12-17 01:16:44.032745
+reaming time:  95.37274509803925 sec.
+```
 
 ## Requirement
 
@@ -48,7 +63,7 @@ python app.py path/to/OpenFOAM/caseDir/log end_time
 
 ## about app.py
 
-```
+``reau`
 usage: app.py [-h] file_path end_time
 
 Predict calculation end time
